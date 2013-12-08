@@ -3,9 +3,7 @@
   (:require
    [clojure.string :refer [capitalize]]
    [goog.dom :as gdom]
-   [goog.array :as array]
    [goog.events :as gevents]
-   [goog.style :as gcss]
    [domina :as dom]
    [domina.css :as css]
    [domina.events :as events]
