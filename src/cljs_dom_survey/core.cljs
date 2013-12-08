@@ -3,9 +3,7 @@
   (:require
    [clojure.string :refer [capitalize]]
    [goog.dom :as gdom]
-   [goog.array :as array]
    [goog.events :as gevents]
-   [goog.style :as gcss]
    [domina :as dom]
    [domina.css :as css]
    [domina.events :as events]
@@ -20,7 +18,7 @@
 (defn log [lstr] (.log js/console lstr))
 
 ;; "Raw" DOM Manipulation
-(defn add-annoying-alert-listeners_rawjs!
+(defn add-annoying-alert-listener_rawjs!
   [a]
   (.addEventListener ; you have to support IE8 and lower? Bummer.
    a "click"
@@ -43,11 +41,11 @@
     (set! (.-innerHTML a)  (-> link first name capitalize))
     (.appendChild new-li a)
     (.appendChild ul new-li)
-    (add-annoying-alert-listeners_rawjs! a)))
+    (add-annoying-alert-listener_rawjs! a)))
 
 ;; Google Closure
 
-(defn add-annoying-alert-listeners_goog!
+(defn add-annoying-alert-listener_goog!
   [a]
   (gevents/listen
    a goog.events.EventType.CLICK
@@ -66,11 +64,11 @@
     (gdom/setTextContent a (-> link first name capitalize))
     (gdom/appendChild li a)
     (gdom/appendChild ul li)
-    (add-annoying-alert-listeners_goog! a)))
+    (add-annoying-alert-listener_goog! a)))
 
 ;; domina
 
-(defn add-annoying-alert-listeners_domina!
+(defn add-annoying-alert-listener_domina!
   [a]
   (events/listen!
    (css/sel "a") :click
@@ -90,11 +88,11 @@
       (dom/set-attr! :href (last link)))
     (dom/append! li a)
     (dom/append! ul li)
-    (add-annoying-alert-listeners_domina! a)))
+    (add-annoying-alert-listener_domina! a)))
 
 ;; Dommy
 
-(defn add-annoying-alert-listeners_dommy!
+(defn add-annoying-alert-listener_dommy!
   [a]
   (dommy/listen!
    a :click
@@ -110,11 +108,11 @@
         link-txt (-> link first name capitalize)
         li       (node [:li [:a {:href (last link)} link-txt]])]
     (dommy/append! ul li)
-    (add-annoying-alert-listeners_dommy! (sel1 li :a))))
+    (add-annoying-alert-listener_dommy! (sel1 li :a))))
 
 ;; jayq
 
-(defn add-annoying-alert-listeners_jayq!
+(defn add-annoying-alert-listener_jayq!
   [a]
   (jayq/on a :click
       (fn [evt]
@@ -129,11 +127,11 @@
         link-txt (-> link first name capitalize)
         li-str   (str "<li><a href=" (last link) ">" link-txt "</a></li>")]
     (jayq/append $ul li-str)
-    (add-annoying-alert-listeners_jayq! (jayq/find $ul :a))))
+    (add-annoying-alert-listener_jayq! (jayq/find $ul :a))))
 
 ;; Enfocus
 
-(em/defaction add-annoying-alert-listeners_enfocus!
+(em/defaction add-annoying-alert-listener_enfocus!
   [href]
   [(str "a[href=" href "]")]
   (ef-events/listen
@@ -150,7 +148,7 @@
         href     (last link)
         li       (ef/html [:li [:a {:href href} link-str]])]
     (ef/at js/document ["#menu ul"] (ef/append li))
-    (add-annoying-alert-listeners_enfocus! href)))
+    (add-annoying-alert-listener_enfocus! href)))
 
 (set! (.-onload js/window)
       #(add-menu-link_rawjs! [:link4 "#link4"]))
