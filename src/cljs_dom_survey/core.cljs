@@ -116,7 +116,7 @@
   [a]
   (jayq/on a :click
       (fn [evt]
-        (let [atxt (-> evt (.-currentTarget) dommy/text)
+        (let [atxt (-> evt (.-currentTarget) $ jayq/text)
               msg  (str "You clicked " atxt)]
           (.alert js/window msg)
           (.preventDefault evt)))))
