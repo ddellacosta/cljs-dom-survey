@@ -57,7 +57,7 @@
 
 (defn add-menu-link_goog!
   [link]
-  (let [ul (first (query "#menu ul"))
+  (let [ul (aget (query "#menu ul") 0)
         li (gdom/createElement "li")
         a  (gdom/createElement "a")]
     (set! (.-href a) (last link))
@@ -131,9 +131,29 @@
 
 ;; Enfocus
 
-(em/defaction add-annoying-alert-listener_enfocus!
-  [href]
-  [(str "a[href=" href "]")]
+;; Dave's older version:
+
+;; (em/defaction add-annoying-alert-listener_enfocus!
+;;   [href]
+;;   [(str "a[href=" href "]")]
+;;   (ef-events/listen
+;;    :click
+;;    (fn [evt]
+;;      (let [atxt (-> evt (.-currentTarget) (.-text))
+;;            msg  (str "You clicked " atxt)]
+;;        (.alert js/window msg)
+;;        (.preventDefault evt)))))
+
+;; (defn add-menu-link_enfocus!
+;;   [link]
+;;   (let [link-str (-> link first name capitalize)
+;;         href     (last link)
+;;         li       (ef/html [:li [:a {:href href} link-str]])]
+;;     (ef/at ["#menu ul"] (ef/append li))
+;;     (add-annoying-alert-listener_enfocus! href)))
+
+;; Creighton Kirkendall's (author of Enfocus) more idiomatic version
+(defn add-annoying-alert-listener_enfocus! []
   (ef-events/listen
    :click
    (fn [evt]
@@ -147,13 +167,14 @@
   (let [link-str (-> link first name capitalize)
         href     (last link)
         li       (ef/html [:li [:a {:href href} link-str]])]
-    (ef/at js/document ["#menu ul"] (ef/append li))
-    (add-annoying-alert-listener_enfocus! href)))
+    (ef/at 
+     "#menu ul" (ef/append li)
+     (str "a[href=" href "]") (add-annoying-alert-listener_enfocus!))))
 
 (set! (.-onload js/window)
-      #(add-menu-link_rawjs! [:link4 "#link4"]))
+;;      #(add-menu-link_rawjs! [:link4 "#link4"]))
 ;;      #(add-menu-link_goog! [:link4 "#link4"]))
 ;;      #(add-menu-link_domina! [:link4 "#link4"]))
 ;;      #(add-menu-link_dommy! [:link4 "#link4"]))
 ;;      #(add-menu-link_jayq! [:link4 "#link4"]))
-;;      #(add-menu-link_enfocus! [:link4 "#link4"]))
+      #(add-menu-link_enfocus! [:link4 "#link4"]))
